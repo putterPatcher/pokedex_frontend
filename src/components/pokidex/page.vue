@@ -1,0 +1,177 @@
+<script setup>
+import { getPokedex, filterPokemon } from '@/requests/pokedex_requests';
+import { BButton } from 'bootstrap-vue-next';
+import { onMounted, reactive, ref } from 'vue';
+import Template_body from '../template_body.vue';
+
+
+const pokedex = reactive({ pokemons: null })
+
+const filter_data = { name: "", height: { max: "", min: "" }, weight: { max: "", min: "" }, candy_count: { max: "", min: "" }, spawn_chance: { max: "", min: "" }, avg_spawns: { max: "", min: "" } }
+
+const filters = reactive({filters: filter_data})
+
+const filter_show = ref(false)
+
+const getPokedexData = async () => {
+    const data = await getPokedex()
+    pokedex.pokemons = data.data
+}
+
+const filterPokedexData = async (filters) => {
+    const data = await filterPokemon(filters)
+    pokedex.pokemons = data.data
+}
+
+const toggle_filter_button = () => {
+    filter_show.value = !filter_show.value
+}
+
+const filter_submit_handler = async () => {
+    console.log(filters.filters)
+    await filterPokedexData(filters.filters)
+}
+
+const filter_reset_handler = async () => {
+    filters.filters = filter_data
+    await getPokedexData()
+}
+
+onMounted(async () => {
+    await getPokedexData()
+})
+
+</script>
+
+<template>
+    <Template_body style="text-align: center; color: white;">
+        <div class="two_buttons">
+            <BButton variant="danger" @click="toggle_filter_button">Filter</BButton>
+            <BButton variant="success">Login/Add Pokemon</BButton>
+        </div>
+        <div v-if="filter_show"
+            style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;">
+            <form @submit.prevent="filter_submit_handler" @reset.prevent="filter_reset_handler">
+                <div class="filter_forms">
+                    <label>Name:</label>
+                    <input type="text" v-model="filters.filters.name"/>
+                </div>
+                <br />
+                <div class="filter_forms">
+                    <label>Height:</label>
+                    <div class="filter_form">
+                        <label>Min</label>
+                        <input type="number" v-model="filters.filters.height.min" />
+                        <label>Max</label>
+                        <input type="number" v-model="filters.filters.height.max" />
+                    </div>
+                </div>
+                <br />
+                <div class="filter_forms">
+                    <label>Weight:</label>
+                    <div class="filter_form">
+                        <label>Min</label>
+                        <input type="number" v-model="filters.filters.weight.min"/>
+                        <label>Max</label>
+                        <input type="number" v-model="filters.filters.weight.max"/>
+                    </div>
+                </div>
+                <br />
+                <div class="filter_forms">
+                    <label>Candy Count:</label>
+                    <div class="filter_form">
+                        <label>Min</label>
+                        <input type="number" v-model="filters.filters.candy_count.min"/>
+                        <label>Max</label>
+                        <input type="number" v-model="filters.filters.candy_count.max"/>
+                    </div>
+                </div>
+                <br />
+                <div class="filter_forms">
+                    <label>Spawn Chance:</label>
+                    <div class="filter_form">
+                        <label>Min</label>
+                        <input type="number" v-model="filters.filters.spawn_chance.min"/>
+                        <label>Max</label>
+                        <input type="number" v-model="filters.filters.spawn_chance.max"/>
+                    </div>
+                </div>
+                <br />
+                <div class="filter_forms">
+                    <label>Avg. Spawns:</label>
+                    <div class="filter_form">
+                        <label>Min</label>
+                        <input type="number" v-model="filters.filters.avg_spawns.min"/>
+                        <label>Max</label>
+                        <input type="number" v-model="filters.filters.avg_spawns.max"/>
+                    </div>
+                </div>
+                <div class="two_buttons" style="padding-bottom: 0rem;padding-top: 0.5rem;">
+                    <BButton type="submit" variant="outline-success">Apply</BButton>
+                    <BButton type="reset" variant="outline-danger">Reset</BButton>
+                </div>
+            </form>
+        </div>
+        <div class="hide-scrollbar"
+            style="display: flex; gap: 1rem; flex-wrap: wrap;overflow-y: scroll; height:92%; justify-content: center;">
+            <div v-for="item in pokedex.pokemons"
+                style="width: 15rem;height: 15rem;border: solid greenyellow;border-radius: 0.3rem;padding: 0.3rem;">
+                <img :src="item.img" height="75px" width="75px" />
+                <h5>{{ item.name }}</h5>
+                <div style="display: flex;flex-direction: column;padding-bottom: 0.3rem;">
+                    <span class="p_font">Type: {{ item.type }}</span>
+                    <span class="p_font">Height: {{ item.height }} m</span>
+                    <span class="p_font">Weight: {{ item.weight }} kg</span>
+                </div>
+                <BButton size="sm" type="primary">Details</BButton>
+            </div>
+        </div>
+    </Template_body>
+</template>
+
+<style>
+.hide-scrollbar {
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.p_font {
+    font-size: small;
+}
+
+.filter_form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    grid-column: 2 / span 4;
+}
+
+label {
+    margin-bottom: 0rem !important;
+}
+
+.two_buttons {
+    display: flex;
+    justify-content: right;
+    padding-bottom: 0.5rem;
+    gap: 0.7rem;
+    padding-right: 0.3rem;
+}
+
+.filter_forms {
+    display: grid;
+    justify-items: left;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(6, 1fr);
+}
+</style>
