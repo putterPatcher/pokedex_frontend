@@ -11,8 +11,8 @@ const router = createRouter({
   routes: [
     {path: "/", name: "Auth", component: AuthPage},
     {path: "/home", name: "Home", component: PokidexPage},
-    {path: "/add_pokimon", name: "AddPokimon", component: AddPokimon},
-    {path: "/pokimon/:id", name: "Pokimon", component: PokimonDetails},
+    {path: "/add_pokemon", name: "AddPokemon", component: AddPokimon},
+    {path: "/pokemon/:id", name: "Pokemon", component: PokimonDetails},
     {path: "/user", name: "User", component: UserPage},
     {path: "/:pathMatch(.*)*", name: "404", component: NotFound}
   ],

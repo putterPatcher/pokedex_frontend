@@ -3,15 +3,20 @@ import { getPokedex, filterPokemon } from '@/requests/pokedex_requests';
 import { BButton } from 'bootstrap-vue-next';
 import { onMounted, reactive, ref } from 'vue';
 import Template_body from '../template_body.vue';
+import { useRouter } from 'vue-router';
 
 
 const pokedex = reactive({ pokemons: null })
+
+const logged_in = ref(false)
 
 const filter_data = { name: "", height: { max: "", min: "" }, weight: { max: "", min: "" }, candy_count: { max: "", min: "" }, spawn_chance: { max: "", min: "" }, avg_spawns: { max: "", min: "" } }
 
 const filters = reactive({filters: filter_data})
 
 const filter_show = ref(false)
+
+const router = useRouter()
 
 const getPokedexData = async () => {
     const data = await getPokedex()
@@ -37,7 +42,20 @@ const filter_reset_handler = async () => {
     await getPokedexData()
 }
 
+const go_to_page = () => {
+    if (logged_in.value) {
+        router.push({"path": '/add_pokemon'})
+    } else {
+        router.push({"path": "/"})
+    }
+}
+
 onMounted(async () => {
+    if (localStorage.getItem("jwt")) {
+        logged_in.value = true
+    } else {
+        logged_in.value = false
+    }
     await getPokedexData()
 })
 
@@ -46,8 +64,9 @@ onMounted(async () => {
 <template>
     <Template_body style="text-align: center; color: white;">
         <div class="two_buttons">
+            <BButton v-if="logged_in">Account</BButton>
             <BButton variant="danger" @click="toggle_filter_button">Filter</BButton>
-            <BButton variant="success">Login/Add Pokemon</BButton>
+            <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Login" }}</BButton>
         </div>
         <div v-if="filter_show"
             style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;">

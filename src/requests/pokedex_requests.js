@@ -4,7 +4,6 @@ import { json_header } from './request_helpers'
 export const getPokedex = async () => {
     const url = backend_url + base_urls.pokedex + pokedex_urls.pokedex
     const response = await fetch(url, {
-        headers: json_header,
         method: "GET",
     })
     const data = await response.json()
@@ -34,7 +33,6 @@ export const filterPokemon = async (data) => {
         } 
     }
     const response = await fetch(url, {
-        headers: json_header,
         method: "GET",
     })
     const data1 = await response.json()
