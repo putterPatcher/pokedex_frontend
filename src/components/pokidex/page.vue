@@ -78,7 +78,7 @@ const to_details = (id) => {
             <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Sign Up" }}</BButton>
         </div>
         <div v-if="filter_show"
-            style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;">
+            style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;width: calc(100vw-2rem);">
             <form @submit.prevent="filter_submit_handler" @reset.prevent="filter_reset_handler">
                 <div class="filter_forms">
                     <label>Name:</label>
