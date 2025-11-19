@@ -75,7 +75,7 @@ const to_details = (id) => {
         <div class="two_buttons">
             <BButton v-if="logged_in" @click="to_account">Account</BButton>
             <BButton variant="danger" @click="toggle_filter_button">Filter</BButton>
-            <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Login" }}</BButton>
+            <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Sign Up" }}</BButton>
         </div>
         <div v-if="filter_show"
             style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;">
