@@ -78,11 +78,11 @@ const to_details = (id) => {
             <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Sign Up" }}</BButton>
         </div>
         <div v-if="filter_show"
-            style="position: fixed; text-align: center;width: fit-content;background-color: white; color: black; padding: 1rem;margin-left: 1rem;margin-right: 1rem;width: calc(100vw-2rem);">
-            <form @submit.prevent="filter_submit_handler" @reset.prevent="filter_reset_handler">
+            style="border: 3px solid white;border-radius: 1rem;position: fixed; text-align: center;height: 64vh;width: fit-content;background-color: darkred; color: white;padding: 1rem;margin-left: 1rem;margin-right: 1rem;right: 0rem;">
+            <div class="hide-scrollbar" style="overflow-y: scroll;height: 100%;">
                 <div class="filter_forms">
                     <label>Name:</label>
-                    <input type="text" v-model="filters.filters.name" />
+                    <input class="filter_form" type="text" v-model="filters.filters.name" />
                 </div>
                 <br />
                 <div class="filter_forms">
@@ -135,10 +135,10 @@ const to_details = (id) => {
                     </div>
                 </div>
                 <div class="two_buttons" style="padding-bottom: 0rem;padding-top: 0.5rem;">
-                    <BButton type="submit" variant="outline-success">Apply</BButton>
-                    <BButton type="reset" variant="outline-danger">Reset</BButton>
+                    <BButton @click="filter_submit_handler" variant="outline-success">Apply</BButton>
+                    <BButton @click="filter_reset_handler" variant="outline-info">Reset</BButton>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="hide-scrollbar"
             style="display: flex; gap: 1rem; flex-wrap: wrap;overflow-y: scroll; height:92%; justify-content: center;">
@@ -183,6 +183,7 @@ const to_details = (id) => {
     justify-content: center;
     align-items: center;
     grid-column: 2 / span 4;
+    flex-wrap: wrap ;
 }
 
 label {
@@ -201,6 +202,7 @@ label {
     display: grid;
     justify-items: left;
     grid-auto-flow: column;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
 }
 </style>
