@@ -4,24 +4,14 @@ import Template_body from '../template_body.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, reactive, ref } from 'vue';
 import { addPokemon, getPokemon } from '@/requests/pokedex_requests';
+import { editPokemon } from '@/requests/user_requests';
 
-const jwt = localStorage.getItem('jwt')
+const emits = defineEmits(['editFalse'])
+const props = defineProps([ 'id' ])
 
-const details = reactive({ name: "", img: "", height: "", weight: "", type: "", next_evolution: "", weaknesses: "", candy: "", candy_count: 0, egg: "", spawn_chance: 0, spawn_time: "", avg_spawns: 0, multipliers: "" })
+const details = reactive({})
 
 const router = useRouter()
-
-const to_home = () => {
-    router.push({ "path": "/home" })
-}
-
-const handle_collection = () => {
-    if (jwt) {
-        router.push({ "path": "/user" })
-    } else {
-        router.push({ "path": "/" })
-    }
-}
 
 const handle_input_change = (field, value) => {
     if (field == 'name') {
@@ -73,65 +63,86 @@ const handle_submit = async () => {
         details.multipliers = details.multipliers.split(",").map(item => parseFloat(item))
         details.jwt = localStorage.getItem('jwt')
     }
-    const res = await addPokemon(details)
+    const res = await editPokemon(details)
     if (res.success) {
-        router.push({ "path": "/home" })
+        emits('editFalse')
     } else {
         alert(res.message)
     }
 }
 
+onMounted(async () => {
+    const res = await getPokemon(props.id)
+    if (res.success) {
+        const data = res.data
+        details.name = data.name
+        details.img = data.img
+        details.height = data.height
+        details.weight = data.weight
+        details.type = data.type.join(", ")
+        details.next_evolution = data.next_evolution.map(item => item.name).join(", ")
+        details.weaknesses = data.weaknesses.join(", ")
+        details.candy = data.candy
+        details.candy_count = data.candy_count
+        details.egg = data.egg
+        details.spawn_chance = data.spawn_chance
+        details.spawn_time = data.spawn_time
+        details.avg_spawns = data.avg_spawns
+        details.multipliers = data.multipliers.join(", ")
+        details._id = data._id
+    } else {
+        alert(res.message)
+    }
+
+})
+
 </script>
 
 <template>
-    <Template_body>
-        <div style="display: flex;gap: 1rem;justify-content: end;">
-            <BButton variant="success" @click="to_home">Pokedex</BButton>
-            <BButton @click="handle_collection">{{ jwt ? "Account" : "Login" }}</BButton>
-        </div>
-        <h3 style="color: bisque;font-weight: 700;text-align: center;padding-bottom: 0.5rem;">Add Pokemon</h3>
+        <h3 style="color: bisque;font-weight: 700;text-align: center;padding-bottom: 0.5rem;">Edit Pokemon</h3>
         <div v-if="details != null"
             style="gap: 1rem;align-items: center;color: white;display: grid;grid-template-columns: repeat(2, 1fr);padding-bottom: 2rem;">
             <span class="key">Name:</span>
             <input :value="details.name" type="text" class="value"
                 @input="handle_input_change('name', $event.target.value)" required placeholder="Required*" />
             <span class="key">Image:</span>
-            <input type="text" class="value" @input="handle_input_change('img', $event.target.value)" required
+            <input :value="details.img" type="text" class="value" @input="handle_input_change('img', $event.target.value)" required
                 placeholder="Required*" />
             <span class="key">Height:</span>
-            <input type="number" class="value" @input="handle_input_change('height', $event.target.value)" required
+            <input :value="details.height" type="number" class="value" @input="handle_input_change('height', $event.target.value)" required
                 placeholder="Required*" />
             <span class="key">Weight:</span>
-            <input type="number" class="value" @input="handle_input_change('weight', $event.target.value)" required
+            <input :value="details.weight" type="number" class="value" @input="handle_input_change('weight', $event.target.value)" required
                 placeholder="Required*" />
             <span class="key">Type:</span>
-            <input type="text" class="value" @input="handle_input_change('type', $event.target.value)" required
+            <input :value="details.type" type="text" class="value" @input="handle_input_change('type', $event.target.value)" required
                 placeholder="Required*" />
             <span class="key">Next Evolution:</span>
-            <input type="text" class="value" @input="handle_input_change('next_evolution', $event.target.value)" />
+            <input :value="details.next_evolution" type="text" class="value" @input="handle_input_change('next_evolution', $event.target.value)" />
             <span class="key">Weaknesses:</span>
-            <input type="text" class="value" @input="handle_input_change('weaknesses', $event.target.value)" />
+            <input :value="details.weaknesses" type="text" class="value" @input="handle_input_change('weaknesses', $event.target.value)" />
             <span class="key">Candy:</span>
-            <input type="text" class="value" @input="handle_input_change('candy', $event.target.value)" />
+            <input :value="details.candy" type="text" class="value" @input="handle_input_change('candy', $event.target.value)" />
             <span class="key">Candy Count:</span>
             <input :value="details.candy_count" type="number" class="value"
                 @input="handle_input_change('candy_count', $event.target.value)" />
             <span class="key">Egg:</span>
-            <input type="text" class="value" @input="handle_input_change('egg', $event.target.value)" />
+            <input :value="details.egg" type="text" class="value" @input="handle_input_change('egg', $event.target.value)" />
             <span class="key">Spawn Chance:</span>
             <input :value="details.spawn_chance" type="number" class="value"
                 @input="handle_input_change('spawn_chance', $event.target.value)" />
             <span class="key">Spawn Time:</span>
-            <input type="text" class="value" @input="handle_input_change('spawn_time', $event.target.value)" />
+            <input :value="details.spawn_time" type="text" class="value" @input="handle_input_change('spawn_time', $event.target.value)" />
             <span class="key">Average Spawns:</span>
             <input :value="details.avg_spawns" type="number" class="value"
                 @input="handle_input_change('avg_spawns', $event.target.value)" />
             <span class="key">Multipliers:</span>
-            <input type="text" class="value" @input="handle_input_change('multipliers', $event.target.value)" />
-            <BButton style="width: 200px; grid-column: 1 / span 2;justify-self: center;" variant="outline-success"
+            <input :value="details.multipliers" type="text" class="value" @input="handle_input_change('multipliers', $event.target.value)" />
+            <BButton style="width: 200px;justify-self: center;" variant="outline-success"
                 @click="handle_submit">Add</BButton>
+            <BButton style="width: 200px;justify-self: center;" variant="outline-danger"
+                @click="$emit('editFalse')">Cancel</BButton>
         </div>
-    </Template_body>
 </template>
 
 <style>

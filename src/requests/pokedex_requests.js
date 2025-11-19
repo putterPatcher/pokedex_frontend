@@ -37,4 +37,24 @@ export const filterPokemon = async (data) => {
     })
     const data1 = await response.json()
     return data1
-} 
+}
+
+export const getPokemon = async (id) => {
+    const url = backend_url + base_urls.pokedex + pokedex_urls.pokemon + "/" + id
+    const response = await fetch(url, {
+        method: "GET"
+    })
+    const data = await response.json()
+    return data
+}
+
+export const addPokemon = async (data) => {
+    const url = backend_url + base_urls.pokedex + pokedex_urls.add_pokemon
+    const response = await fetch(url, {
+        headers: json_header(),
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    const res = response.json()
+    return res
+}

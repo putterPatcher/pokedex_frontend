@@ -6,7 +6,7 @@ export const base_urls = {
 }
 
 export const pokedex_urls = {
-    pokemon: (id) => { return "/pokimon/" + id },
+    pokemon: "/pokimon",
     pokedex: "/pokidex",
     add_pokemon: "/add_pokimon",
     filter_pokemon: "/filter_pokimon",

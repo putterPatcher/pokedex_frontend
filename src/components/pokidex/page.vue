@@ -12,7 +12,7 @@ const logged_in = ref(false)
 
 const filter_data = { name: "", height: { max: "", min: "" }, weight: { max: "", min: "" }, candy_count: { max: "", min: "" }, spawn_chance: { max: "", min: "" }, avg_spawns: { max: "", min: "" } }
 
-const filters = reactive({filters: filter_data})
+const filters = reactive({ filters: filter_data })
 
 const filter_show = ref(false)
 
@@ -33,7 +33,6 @@ const toggle_filter_button = () => {
 }
 
 const filter_submit_handler = async () => {
-    console.log(filters.filters)
     await filterPokedexData(filters.filters)
 }
 
@@ -44,9 +43,9 @@ const filter_reset_handler = async () => {
 
 const go_to_page = () => {
     if (logged_in.value) {
-        router.push({"path": '/add_pokemon'})
+        router.push({ "path": '/add_pokemon' })
     } else {
-        router.push({"path": "/"})
+        router.push({ "path": "/" })
     }
 }
 
@@ -59,12 +58,22 @@ onMounted(async () => {
     await getPokedexData()
 })
 
+const to_account = () => {
+    if (localStorage.getItem('jwt')) {
+        router.push({ 'path': '/user' })
+    }
+}
+
+const to_details = (id) => {
+    router.push({ "path": `/pokemon/${id}` })
+}
+
 </script>
 
 <template>
     <Template_body style="text-align: center; color: white;">
         <div class="two_buttons">
-            <BButton v-if="logged_in">Account</BButton>
+            <BButton v-if="logged_in" @click="to_account">Account</BButton>
             <BButton variant="danger" @click="toggle_filter_button">Filter</BButton>
             <BButton variant="success" @click="go_to_page">{{ logged_in ? "Add Pokemon" : "Login" }}</BButton>
         </div>
@@ -73,7 +82,7 @@ onMounted(async () => {
             <form @submit.prevent="filter_submit_handler" @reset.prevent="filter_reset_handler">
                 <div class="filter_forms">
                     <label>Name:</label>
-                    <input type="text" v-model="filters.filters.name"/>
+                    <input type="text" v-model="filters.filters.name" />
                 </div>
                 <br />
                 <div class="filter_forms">
@@ -90,9 +99,9 @@ onMounted(async () => {
                     <label>Weight:</label>
                     <div class="filter_form">
                         <label>Min</label>
-                        <input type="number" v-model="filters.filters.weight.min"/>
+                        <input type="number" v-model="filters.filters.weight.min" />
                         <label>Max</label>
-                        <input type="number" v-model="filters.filters.weight.max"/>
+                        <input type="number" v-model="filters.filters.weight.max" />
                     </div>
                 </div>
                 <br />
@@ -100,9 +109,9 @@ onMounted(async () => {
                     <label>Candy Count:</label>
                     <div class="filter_form">
                         <label>Min</label>
-                        <input type="number" v-model="filters.filters.candy_count.min"/>
+                        <input type="number" v-model="filters.filters.candy_count.min" />
                         <label>Max</label>
-                        <input type="number" v-model="filters.filters.candy_count.max"/>
+                        <input type="number" v-model="filters.filters.candy_count.max" />
                     </div>
                 </div>
                 <br />
@@ -110,9 +119,9 @@ onMounted(async () => {
                     <label>Spawn Chance:</label>
                     <div class="filter_form">
                         <label>Min</label>
-                        <input type="number" v-model="filters.filters.spawn_chance.min"/>
+                        <input type="number" v-model="filters.filters.spawn_chance.min" />
                         <label>Max</label>
-                        <input type="number" v-model="filters.filters.spawn_chance.max"/>
+                        <input type="number" v-model="filters.filters.spawn_chance.max" />
                     </div>
                 </div>
                 <br />
@@ -120,9 +129,9 @@ onMounted(async () => {
                     <label>Avg. Spawns:</label>
                     <div class="filter_form">
                         <label>Min</label>
-                        <input type="number" v-model="filters.filters.avg_spawns.min"/>
+                        <input type="number" v-model="filters.filters.avg_spawns.min" />
                         <label>Max</label>
-                        <input type="number" v-model="filters.filters.avg_spawns.max"/>
+                        <input type="number" v-model="filters.filters.avg_spawns.max" />
                     </div>
                 </div>
                 <div class="two_buttons" style="padding-bottom: 0rem;padding-top: 0.5rem;">
@@ -134,15 +143,16 @@ onMounted(async () => {
         <div class="hide-scrollbar"
             style="display: flex; gap: 1rem; flex-wrap: wrap;overflow-y: scroll; height:92%; justify-content: center;">
             <div v-for="item in pokedex.pokemons"
-                style="width: 15rem;height: 15rem;border: solid greenyellow;border-radius: 0.3rem;padding: 0.3rem;">
+                style="width: 15rem;height: 15rem;border: solid greenyellow;border-radius: 0.3rem;padding: 0.3rem;"
+                :id="item._id">
                 <img :src="item.img" height="75px" width="75px" />
                 <h5>{{ item.name }}</h5>
                 <div style="display: flex;flex-direction: column;padding-bottom: 0.3rem;">
-                    <span class="p_font">Type: {{ item.type }}</span>
+                    <span class="p_font">Type: {{ item.type.join(", ") }}</span>
                     <span class="p_font">Height: {{ item.height }} m</span>
                     <span class="p_font">Weight: {{ item.weight }} kg</span>
                 </div>
-                <BButton size="sm" type="primary">Details</BButton>
+                <BButton size="sm" variant="info" @click="to_details(item._id)">Details</BButton>
             </div>
         </div>
     </Template_body>

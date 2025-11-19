@@ -33,7 +33,6 @@ const login_handler = async () => {
             },
             body: data.message
         })
-        console.log(data.data.jwt)
         localStorage.setItem("jwt", data.data.jwt)
         setTimeout(() => {
             router.push({"path": "/home"})
