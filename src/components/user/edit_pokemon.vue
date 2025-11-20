@@ -139,7 +139,7 @@ onMounted(async () => {
             <span class="key">Multipliers:</span>
             <input :value="details.multipliers" type="text" class="value" @input="handle_input_change('multipliers', $event.target.value)" />
             <BButton style="width: 200px;justify-self: center;" variant="outline-success"
-                @click="handle_submit">Add</BButton>
+                @click="handle_submit">Update</BButton>
             <BButton style="width: 200px;justify-self: center;" variant="outline-danger"
                 @click="$emit('editFalse')">Cancel</BButton>
         </div>
