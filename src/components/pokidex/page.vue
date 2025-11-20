@@ -20,6 +20,16 @@ const router = useRouter()
 
 const getPokedexData = async () => {
     const data = await getPokedex()
+    filters.filters.height.max = Math.max(...data.data.map(item => item.height))
+    filters.filters.height.min = Math.min(...data.data.map(item => item.height))
+    filters.filters.weight.max = Math.max(...data.data.map(item => item.weight))
+    filters.filters.weight.min = Math.min(...data.data.map(item => item.weight))
+    filters.filters.candy_count.max = Math.max(...data.data.map(item => typeof(item.candy_count) == 'number' ? item.candy_count : 0))
+    filters.filters.candy_count.min = Math.min(...data.data.map(item => typeof(item.candy_count) == 'number' ? item.candy_count : 0))
+    filters.filters.spawn_chance.max = Math.max(...data.data.map(item => item.spawn_chance))
+    filters.filters.spawn_chance.min = Math.min(...data.data.map(item => item.spawn_chance))
+    filters.filters.avg_spawns.max = Math.max(...data.data.map(item => item.avg_spawns))
+    filters.filters.avg_spawns.min = Math.min(...data.data.map(item => item.avg_spawns))
     pokedex.pokemons = data.data
 }
 
